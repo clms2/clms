@@ -39,6 +39,6 @@ id   guest  content  addtime
 id   url  title  pic  ispic  rank
 
 7.栏目表 column=>目录命名做个教程?关于怎样的名字有利于seo:关于我们=>about 联系我们=>contact..
-id  pid  name     dir     list       view      cdesc      keyword  desc  rank 
+id  pid  name     dir     list       view      cdesc      keyword  desc  pic  rank 
          栏目名   目录名  列表模板   详细模板  栏目描述
 
