@@ -26,27 +26,27 @@ Clms for company
   2.栏目缓存，array('pids'=>array(id1,id2..)),当修改或者删除栏目的时候更新缓存
 
 ### DataBase
-  # 文章表 article 用于列表页
-  id	title	pubdate		desc	   pics          addtime
-    	标题	发布日期	简短描述   单/多张图片   添加时间
+    文章表 article 用于列表页
+    id	title	pubdate		desc	   pics          addtime
+    标题	发布日期	简短描述   单/多张图片   添加时间
   
-  # 详细页 arc_detail
-  aid	content	  author   source   
-  文章id  正文	  作者     来源 来源表?..  
+    详细页 arc_detail
+    aid	content	  author   source   
+    文章id  正文	  作者     来源 来源表?..  
     
-  # 管理员 admin
-  id  groupid  uname  pwd   loginip  lastlogin  logintime
+    管理员 admin
+    id  groupid  uname  pwd   loginip  lastlogin  logintime
   
-  # 用户组 group
-  id    gname  limit
+    用户组 group
+    id    gname  limit
                权限      
   
-  # 留言表 message=>加个留言字段管理?可设定该表的附加字段qq tel email reply replyname rtime..?
-  id   guest  content  addtime
-   
-  # 友链表 flink
-  id   url  title  pic  ispic  rank
+    留言表 message=>加个留言字段管理?可设定该表的附加字段qq tel email reply replyname rtime..?
+    id   guest  content  addtime
+    
+    友链表 flink
+    id   url  title  pic  ispic  rank
   
-  # 栏目表 column=>目录命名做个教程?关于怎样的名字有利于seo:关于我们=>about 联系我们=>contact..
-  id  pid  name     dir     list       view      cdesc      keyword  desc  rank 
+    栏目表 column=>目录命名做个教程?关于怎样的名字有利于seo:关于我们=>about 联系我们=>contact..
+    id  pid  name     dir     list       view      cdesc      keyword  desc  rank 
            栏目名   目录名  列表模板   详细模板  栏目描述
