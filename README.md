@@ -3,7 +3,7 @@ Clms
 
 Clms for company
 
-#The Clms Functions
+### The Clms Functions
   1.后台栏目或者文章做成双击修改的，一些标题啦 发布日期啦 啥的 双击修改
   
   2.复制功能，比如一篇文章想把相同的内容复制到另一栏目下，可选择：是否公用同一张图片；衍生出来的修改功能，如果该文章是复制过的，修改的时候同时修改其他相同的文章
@@ -25,7 +25,7 @@ Clms for company
   
   2.栏目缓存，array('pids'=>array(id1,id2..)),当修改或者删除栏目的时候更新缓存
 
-#DataBase
+### DataBase
   # 文章表 article 用于列表页
   id	title	pubdate		desc	   pics          addtime
     	标题	发布日期	简短描述   单/多张图片   添加时间
