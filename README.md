@@ -1,4 +1,4 @@
-Clms
+﻿Clms
 =======
 
 Clms for company
@@ -17,7 +17,23 @@ Clms for company
   
   6.删除栏目的时候默认选中同时删除该栏目及其子栏目的所有文章和图片
   
+  7.程序批量替换模板文件(用于建站初期)
   
+  8.在后台加几个参数，比如：
+	  qq:1233..
+	  tel:180xxx
+	  然后添加文章的时候，自动把内容里的1233..替换成标签比如{cfg.qq},电话替换成{cfg.tel
+	  这样的好处是以后就不用改数据库了
+	  直接后台更改 然后重新生成
+
+  9.修改文章图片的时候把原来的图删了;上传图片的时候判断图片md5是否存在，存在则不上传用已上传的图
+  10.加个防黑功能，流程如下：
+用户上传网站程序之后，将所有的php文件md5_file下生成个hashmap，相当于网站快照。当管理员感觉被黑的时候可以重新生成下，程序比对MD5值是否和原先hash表里的一致，不一致或者多了文件那就是后门了。。不过貌似没有从根本上清理掉漏洞，可以用于快速查找后门程序，很实用
+这样的话最好再弄个追踪功能，我想的是，当添加一句话后门的时候能追踪是哪个程序添加的，也就能找到程序漏洞了
+有种办法可以追踪到更改 ，就是定义个参数，比如$debug=1
+如果自己修改已经运行的程序的话 再生成遍md5就行了
+嗯 还得配合web访问日志
+调出该时刻的http请求就知道是哪个request修改这个文件了
   
   生成html：
   
@@ -26,16 +42,16 @@ Clms for company
   2.栏目缓存，array('pids'=>array(id1,id2..)),当修改或者删除栏目的时候更新缓存
 
 ### DataBase
-    文章表 article 用于列表页
-    id	title	 pubdate		desc	   pics          addtime
-    标题	    发布日期	 简短描述  单/多张图片   添加时间
-  
-    详细页 arc_detail
-    aid	  content	  author   source   
-    文章id  正文	  作者     来源 来源表?..  
+    文章表 article
+    id	title	content	author	pubdate		source	description		pics	addtime		cid	rank	click
+    标题	正文	作者	发布日期	来源	简短描述	单/多张图片id	添加时间	栏目   排序	点击数
+	
+    栏目表 column=>目录命名做个教程?关于怎样的名字有利于seo:关于我们=>about 联系我们=>contact..
+    id  pid 	path	list       view      description     keyword 
+    上级栏目 	栏目路径 列表模板   详细模板  栏目描述	栏目关键词	
     
     管理员 admin
-    id  groupid  uname  pwd   loginip  lastlogin  logintime
+    id  gid  uname  pwd   loginip  lastlogin  logintime
   
     用户组 group
     id    gname  limit
@@ -46,7 +62,7 @@ Clms for company
     
     友链表 flink
     id   url  title  pic  ispic  rank
-  
-    栏目表 column=>目录命名做个教程?关于怎样的名字有利于seo:关于我们=>about 联系我们=>contact..
-    id  pid  name     dir     list       view      cdesc      keyword  desc  rank 
-            栏目名   目录名  列表模板   详细模板  栏目描述
+
+    图片表 pic
+    id    path    md5
+    
