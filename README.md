@@ -41,17 +41,19 @@ Clms for company
   
   2.栏目缓存，array('pids'=>array(id1,id2..)),当修改或者删除栏目的时候更新缓存
 
+  3.如果当前风格是 template/default ,生成完毕将模板文件(.html/.htm)放到 template/default_随机数 ,为的是防止暴露模板,下次生成的时候只要找default_开头的就行了。(现在没必要做-.-)
+
 ### DataBase
     文章表 article
-    id	title	content	author	pubdate		source	description		pics	addtime		cid	rank	click
-    标题	正文	作者	发布日期	来源	简短描述	单/多张图片id	添加时间	栏目   排序	点击数
+    id	title	content	author	pubdate		source	summary		pics	addtime		cid	rank	click
+    标题	正文	作者	发布日期	来源	摘要	单/多张图片id	添加时间	栏目   排序	点击数
 	
     栏目表 column=>目录命名做个教程?关于怎样的名字有利于seo:关于我们=>about 联系我们=>contact..
     id  pid 	path	list       view      description     keyword 
     上级栏目 	栏目路径 列表模板   详细模板  栏目描述	栏目关键词	
     
     管理员 admin
-    id  gid  uname  pwd   loginip  lastlogin  logintime
+    id  gid  uname  pwd  nickname   loginip  lastlogin  logintime
   
     用户组 group
     id    gname  limit
