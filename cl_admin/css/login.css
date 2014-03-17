@@ -1,0 +1,9 @@
+#login_box{width: 380px;height: 235px;border: 15px solid #fff;border-radius: 20px;position: absolute; top:20%;left: 30%;z-index:3;background: url(../images/loginbg.jpg) repeat-x;}
+#login_box h1{font:italic 22px/30px 'Microsoft Yahei';height: 30px;text-indent: 2em;position: relative;float: left;z-index: 8;width: 100%}
+#login_box h1:before{content: attr(title);position: absolute;z-index: 5;top: 100%;left: 0;height: 100%;width: 100%;-webkit-transform:scaleY(-1);transform:scaleY(-0.7);font-style: italic}
+#login_box h1:after{content:'';position: absolute;z-index: 6;top: 100%;left: 0;height: 100%;width: 100%;background: -webkit-gradient(linear,center top,center bottom,from(rgba(255,255,255,0)),to(rgba(255,255,255,1)))}
+#login_box div{padding-left: 50px;padding-top: 20px;}
+#login_box div.uname{padding-top: 80px;}
+.submit a,.submit label{float: left;}
+.submit a{display: inline-block;width: 90px;height: 30px;border: 1px solid #0718bb;font:16px/30px '微软雅黑';text-align: center;background: #009fd6}
+.submit label{font:bold 14px/30px '宋体';color: #f00;padding-left: 10px;display: inline-block;}

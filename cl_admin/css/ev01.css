@@ -1,0 +1,6 @@
+body{background: #3866ed}
+#bg{width:1024px;margin: 0 auto;background-repeat: no-repeat;position: relative;height: 736px;overflow-y:hidden;}
+#bg_h,#bg_c,#bg_f{position: absolute;left: 0;width: 100%;}
+#bg_h{background-image: url(../images/evening-1-01.jpg);top: 0px;height: 263px;}
+#bg_c{background-image: url(../images/evening-1-02.jpg);top: 263px;height: 238px}
+#bg_f{background-image: url(../images/evening-1-03.jpg);top: 501px;height: 235px;}

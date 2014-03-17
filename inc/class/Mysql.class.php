@@ -24,7 +24,7 @@ class Mysql {
 	 * @return resource/false
 	 */
 	function query($sql) {
-		if ($this->debug) echo $sql . '<br>';
+		if ($this->debug) echo $sql, '<br>';
 		$this->lastsql = $sql;
 		if (!($res = mysql_query($sql, $this->link_id))) return false;
 		return $res;
