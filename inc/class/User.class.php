@@ -1,5 +1,5 @@
 <?php
-class user {
+class User {
 	public $uname;
 	public $pwd;
 	
@@ -10,12 +10,11 @@ class user {
 	
 	/**
 	 * 登陆验证
-	 * @return -1:为空,0:账号密码错,否则返回权限
+	 * @return 0:账号密码错,权限
 	 */
 	function checklogin() {
-		if (empty($this->uname) || empty($this->pwd)) return -1;
-		global $db,$dbpre;
-		$row = $db->getOneAssoc("admin a join `{$dbpre}group` b on a.gid = b.id", "uname = '{$this->uname}'", 'pwd,limit');
+		global $db,$pre;
+		$row = $db->getOneAssoc("admin a join `{$pre}group` b on a.gid = b.id", "uname = '{$this->uname}'", 'pwd,limit');
 		if (empty($row) || $this->getpwd($this->pwd) !== $row['pwd']) return 0;
 		return $row['limit'];
 	}

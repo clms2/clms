@@ -1,5 +1,5 @@
 <?php
-include "{$_SERVER['DOCUMENT_ROOT']}/config/sys.config.php";
+include dirname(__DIR__).'/config/sys.config.php';
 if (isset($_SESSION['limit'])){
 	header('location:index.php');
 	exit();
@@ -31,6 +31,11 @@ if (isset($_SESSION['limit'])){
 				密&nbsp;&nbsp;码：
 				<input type="password" id="pwd" name="pwd" />
 			</div>
+			<div>
+				<label for="rem">
+					<input type="checkbox" name="remember" value="1" id="rem"> 记住我
+				</label>
+			</div>
 			<div class="submit">
 				<a href="javascript:void(0)" id="submit">登陆</a>
 				<label id="msg" class="in">
@@ -45,6 +50,7 @@ if (isset($_SESSION['limit'])){
 	//可视化窗口高度
 	var h = $(window).height();
 	$("#bg").height(h);
+	$("#uname").focus();
 
 	var o_msg = $("#msg").children('span');
 	var msg = function(s){
@@ -69,7 +75,7 @@ if (isset($_SESSION['limit'])){
 			url:'ajax.php?act=login',
 			timeout:5000,
 			type:'post',
-			data:{uname:uname,pwd:pwd},
+			data:{uname:uname,pwd:pwd,rem:$("#rem")[0].checked},
 			complete:function(){
 				loading.addClass('hide');
 			},
@@ -79,14 +85,20 @@ if (isset($_SESSION['limit'])){
 			success:function(ret){
 				var ret = parseInt(ret);
 				switch (ret){
+					case -2:
+						msg('系统错误');
+					break;
 					case -1:
-					msg('用户名/密码不能为空')
+						msg('用户名/密码不能为空')
+					break;
+					case 1:
+						location.href = 'index.php';
 					break;
 					case 0:
-					msg('用户名/密码错误');
+						msg('用户名/密码错误');
 					break;
 					default:
-					location.href = 'index.php';
+						msg('未知错误');
 				}
 			}
 		});

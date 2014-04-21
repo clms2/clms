@@ -3,6 +3,6 @@ $dbhost = 'localhost';
 $dbuser = 'root';
 $dbpwd = '123456';
 $dbname = 'clms';
-$dbpre = 'cl_';
+$pre = 'cl_';
 
-$db = new Mysql($dbhost, $dbuser, $dbpwd, $dbname, $dbpre);
+$db = new Mysql($dbhost, $dbuser, $dbpwd, $dbname, $pre);

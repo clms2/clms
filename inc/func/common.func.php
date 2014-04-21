@@ -29,7 +29,3 @@ function walk(&$v, $k, $quote) {
 filter($_GET);
 filter($_POST);
 $_REQUEST = $_GET + $_POST;
-
-function __autoload($class) {
-	include_once ROOT . "/inc/class/{$class}.class.php";
-}

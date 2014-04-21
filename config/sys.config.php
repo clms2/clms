@@ -1,5 +1,5 @@
 <?php
-defined('ROOT') or define('ROOT', $_SERVER['DOCUMENT_ROOT']);
+defined('ROOT') or define('ROOT', strtr(dirname(__DIR__),'\\','/'));
 define('CACHEDIR', ROOT . '/cache');
 define('DEBUG', true);
 
@@ -12,3 +12,6 @@ $sessdir = CACHEDIR . '/session';
 session_save_path($sessdir);
 session_start();
 
+function __autoload($class) {
+	include_once ROOT . "/inc/class/{$class}.class.php";
+}

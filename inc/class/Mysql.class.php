@@ -131,6 +131,8 @@ class Mysql {
 					$v = "`{$k}`+" . strtr($v, '++', '  ');
 				} elseif (strpos($v, '--') > 0) {
 					$v = "`{$k}`-" . strtr($v, '--', '  ');
+				} elseif (strpos($v, '`') !== false) {
+					$v = str_replace(array ('\'', '"'), '', $v);
 				} else {
 					$v = "'" . mysql_real_escape_string($v, $this->link_id) . "'";
 				}
