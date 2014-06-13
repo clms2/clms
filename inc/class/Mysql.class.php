@@ -1,20 +1,17 @@
 <?php
 class Mysql {
-	private $link_id;
-	private $pre;
+	public $link_id;
 	public $debug = 0;
 	public $lastsql; //最后次查询的sql语句
+	protected $dbname;
+	protected $pre;
 	
-
-	function __construct($dbhost, $dbuser, $dbpwd, $dbname, $pre = '', $link_id = null, $charset = 'utf8') {
+	function __construct($dbhost, $dbuser, $dbpwd, $dbname, $pre = '', $charset = 'utf8') {
+		$this->link_id = mysqli_connect($dbhost, $dbuser, $dbpwd) or die(mysqli_error());
+		mysqli_select_db($this->link_id, $dbname);
+		mysqli_query($this->link_id, "set names '{$charset}'");
+		$this->dbname = $dbname;
 		$this->pre = $pre;
-		if (isset($link_id)) {
-			$this->link_id = $link_id;
-		} else {
-			$this->link_id = mysql_connect($dbhost, $dbuser, $dbpwd) or die(mysql_error());
-			mysql_select_db($dbname, $this->link_id);
-			mysql_query("set names '{$charset}'", $this->link_id);
-		}
 	}
 	
 	/**
@@ -24,10 +21,21 @@ class Mysql {
 	 * @return resource/false
 	 */
 	function query($sql) {
-		if ($this->debug) echo $sql, '<br>';
+		if ($this->debug) echo $sql . '<br>';
 		$this->lastsql = $sql;
-		if (!($res = mysql_query($sql, $this->link_id))) return false;
+		if (!($res = mysqli_query($this->link_id, $sql))) return false;
 		return $res;
+	}
+	
+	function getArr($sql, $onefield = false) {
+		$ret = array ();
+		$func = $onefield ? 'mysqli_fetch_row' : 'mysqli_fetch_assoc';
+		if ($res = mysqli_query($this->link_id, $sql)) {
+			while ( ($row = $func($res)) !== false ) {
+				$ret[] = $onefield ? $row[0] : $row;
+			}
+		}
+		return $ret;
 	}
 	
 	/**
@@ -38,7 +46,7 @@ class Mysql {
 	 */
 	function affectedRow($sql) {
 		if (!$this->query($sql)) return 0;
-		return mysql_affected_rows($this->link_id);
+		return mysqli_affected_rows($this->link_id);
 	}
 	
 	/**
@@ -48,10 +56,11 @@ class Mysql {
      * @param string $field 字段名
      * @return string
      */
-	function getOneField($table, $where, $field) {
-		$sql = "select `{$field}` from `{$this->pre}{$table}` where {$where}";
+	function getOneField($table,$field, $where = '') {
+		$where = $where ? "where {$where}" : '';
+		$sql = "select `{$field}` from `{$this->pre}{$table}` {$where}";
 		if (!($res = $this->query($sql))) return '';
-		$row = mysql_fetch_row($res);
+		$row = mysqli_fetch_row($res);
 		return $row[0];
 	}
 	
@@ -62,9 +71,9 @@ class Mysql {
      * @return int
      */
 	function getRowNum($table, $condition = '') {
-		$sql = "select count(*) from {$this->pre}{$table} {$condition}";
+		$sql = "select count(*) from {$table} {$condition}";
 		if (!($res = $this->query($sql))) return 0;
-		$row = mysql_fetch_row($res);
+		$row = mysqli_fetch_row($res);
 		return isset($row[0]) ? $row[0] : 0;
 	}
 	
@@ -79,12 +88,13 @@ class Mysql {
 	 */
 	function getAssoc($table, $condition = '', $field = '', $limit = '') {
 		$field = !$field ? '*' : $this->safe_field($field);
-		$sql = "select {$field} from {$this->pre}{$table} {$condition}";
+		$sql = "select {$field} from {$table} {$condition}";
+		$arr = array ();
 		if (!($res = $this->query($sql))) return false;
-		while ( ($rs = mysql_fetch_assoc($res)) !== false ) {
+		while ( ($rs = mysqli_fetch_assoc($res)) !== null ) {
 			$arr[] = $rs;
 		}
-		return $limit ? isset($arr[0]) ? $arr[0] : '' : $arr;
+		return $limit ? (isset($arr[0]) ? $arr[0] : '') : $arr;
 	}
 	
 	/**
@@ -94,10 +104,10 @@ class Mysql {
      * @param string $colName
      * @return string|Ambigous <string, unknown>
      */
-	function getCols($table, $condition = '', $colName) {
-		$sql = "select {$colName} from {$this->pre}{$table} {$condition}";
+	function getCols($table, $colName, $condition = '') {
+		$sql = "select {$colName} from {$table} {$condition}";
 		if (!($res = $this->query($sql))) return '';
-		while ( ($row = mysql_fetch_row($res)) !== false ) {
+		while ( ($row = mysqli_fetch_row($res)) !== null ) {
 			$arr[] = $row[0];
 		}
 		return !empty($arr) ? $arr : '';
@@ -122,7 +132,7 @@ class Mysql {
 	 * @param string $where        	
 	 * @return int
 	 */
-	function update($table, $assoc, $where) {
+	function update($table, $assoc, $where = '') {
 		$set = array ();
 		foreach ( $assoc as $k => $v ) {
 			if (is_string($v)) {
@@ -131,10 +141,8 @@ class Mysql {
 					$v = "`{$k}`+" . strtr($v, '++', '  ');
 				} elseif (strpos($v, '--') > 0) {
 					$v = "`{$k}`-" . strtr($v, '--', '  ');
-				} elseif (strpos($v, '`') !== false) {
-					$v = str_replace(array ('\'', '"'), '', $v);
 				} else {
-					$v = "'" . mysql_real_escape_string($v, $this->link_id) . "'";
+					$v = "'" . mysqli_real_escape_string($v, $this->link_id) . "'";
 				}
 			}
 			$set[] = "`{$k}`=" . $v;
@@ -143,23 +151,6 @@ class Mysql {
 		$where = $where ? "where {$where}" : '';
 		$sql = "update `{$table}` set {$set} {$where}";
 		return $this->affectedRow($sql);
-	}
-	
-	/**
-     * 用case when更新多条记录
-     * @param unknown_type $table
-     * @param unknown_type $assoc
-     * @param array $case_arr array($when=>array($v,$v2),$value=>array($v,$v2));
-     * @param unknown_type $where
-     */
-	function multi_update($table, $assoc, $case_arr, $where) {
-		/*  $q = "update {$BIAOTOU }user set `{$reward_type}`=`{$reward_type}`+ case id";
-        foreach ($ids as $id){
-            $q .= " when {$id} then {$count[$i]} ";
-            $i++;
-        }
-        $ids = implode(',', $ids);
-        $q.= "end where id in ({$ids})"; */
 	}
 	
 	/**
@@ -176,7 +167,7 @@ class Mysql {
 			$keys[$k] = "`{$v}`";
 		}
 		foreach ( $values as $k => $v ) {
-			if (is_string($v)) $values[$k] = "'" . mysql_real_escape_string($v, $this->link_id) . "'";
+			if (is_string($v)) $values[$k] = "'" . mysqli_real_escape_string($v, $this->link_id) . "'";
 			else $values[$k] = $v;
 		}
 		$keys = implode(',', $keys);
@@ -202,7 +193,7 @@ class Mysql {
      * @param string $field
      * @return string
      */
-	private function safe_field($field) {
+	protected function safe_field($field) {
 		if (!strpos($field, ',')) return "`{$field}`";
 		$temp_arr = explode(',', $field);
 		foreach ( $temp_arr as $k => $v ) {
@@ -212,7 +203,7 @@ class Mysql {
 	}
 	
 	function error() {
-		return addslashes(mysql_error($this->link_id));
+		return addslashes(mysqli_error($this->link_id));
 	}
 	
 	function debug() {
@@ -220,7 +211,7 @@ class Mysql {
 	}
 	
 	function last_id() {
-		return mysql_insert_id($this->link_id);
+		return mysqli_insert_id($this->link_id);
 	}
 }
 
