@@ -4,16 +4,9 @@ MySQL - 5.6.12 : Database - clms
 *********************************************************************
 */
 
-/*!40101 SET NAMES utf8 */;
-
-/*!40101 SET SQL_MODE=''*/;
-
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`clms` /*!40100 DEFAULT CHARACTER SET utf8 */;
-
 /*Table structure for table `cl_admin` */
+
+DROP TABLE IF EXISTS `cl_admin`;
 
 CREATE TABLE `cl_admin` (
   `id` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
@@ -24,12 +17,17 @@ CREATE TABLE `cl_admin` (
   `loginip` varchar(15) DEFAULT NULL,
   `lastlogin` varchar(15) DEFAULT NULL,
   `logintime` int(10) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uname` (`uname`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Data for the table `cl_admin` */
 
+insert  into `cl_admin`(`id`,`gid`,`uname`,`pwd`,`nickname`,`loginip`,`lastlogin`,`logintime`) values (1,1,'admin','nqp3949on59noor','管理员','127.0.0.1','127.0.0.1',1396838959);
+
 /*Table structure for table `cl_arc_pic` */
+
+DROP TABLE IF EXISTS `cl_arc_pic`;
 
 CREATE TABLE `cl_arc_pic` (
   `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -42,6 +40,8 @@ CREATE TABLE `cl_arc_pic` (
 /*Data for the table `cl_arc_pic` */
 
 /*Table structure for table `cl_article` */
+
+DROP TABLE IF EXISTS `cl_article`;
 
 CREATE TABLE `cl_article` (
   `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -61,6 +61,8 @@ CREATE TABLE `cl_article` (
 
 /*Table structure for table `cl_column` */
 
+DROP TABLE IF EXISTS `cl_column`;
+
 CREATE TABLE `cl_column` (
   `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(8) unsigned NOT NULL COMMENT 'parent id,父id',
@@ -76,6 +78,8 @@ CREATE TABLE `cl_column` (
 
 /*Table structure for table `cl_flink` */
 
+DROP TABLE IF EXISTS `cl_flink`;
+
 CREATE TABLE `cl_flink` (
   `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
   `url` varchar(255) NOT NULL,
@@ -90,16 +94,22 @@ CREATE TABLE `cl_flink` (
 
 /*Table structure for table `cl_group` */
 
+DROP TABLE IF EXISTS `cl_group`;
+
 CREATE TABLE `cl_group` (
   `id` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
   `gname` varchar(55) NOT NULL COMMENT 'group name,用户组名',
   `limit` varchar(500) NOT NULL COMMENT '权限',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Data for the table `cl_group` */
 
+insert  into `cl_group`(`id`,`gname`,`limit`) values (1,'管理员组','all');
+
 /*Table structure for table `cl_message` */
+
+DROP TABLE IF EXISTS `cl_message`;
 
 CREATE TABLE `cl_message` (
   `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -108,9 +118,4 @@ CREATE TABLE `cl_message` (
   `addtime` int(10) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
-
-/*Data for the table `cl_message` */
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+\
