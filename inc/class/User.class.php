@@ -10,11 +10,11 @@ class User {
 	
 	/**
 	 * 登陆验证
-	 * @return 0:账号密码错,权限
+	 * @return 0:账号密码错|权限
 	 */
 	function checklogin() {
 		global $db,$pre;
-		$row = $db->getOneAssoc("admin a join `{$pre}group` b on a.gid = b.id", "uname = '{$this->uname}'", 'pwd,limit');
+		$row = $db->getOneAssoc("{$pre}admin a join `{$pre}group` b on a.gid = b.id", "uname = '{$this->uname}'", 'pwd,limit');
 		if (empty($row) || $this->getpwd($this->pwd) !== $row['pwd']) return 0;
 		return $row['limit'];
 	}

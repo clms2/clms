@@ -142,7 +142,7 @@ class Mysql {
 				} elseif (strpos($v, '--') > 0) {
 					$v = "`{$k}`-" . strtr($v, '--', '  ');
 				} else {
-					$v = "'" . mysqli_real_escape_string($v, $this->link_id) . "'";
+					$v = "'" . mysqli_real_escape_string($this->link_id, $v) . "'";
 				}
 			}
 			$set[] = "`{$k}`=" . $v;

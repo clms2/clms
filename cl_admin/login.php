@@ -13,7 +13,7 @@ if (isset($_SESSION['limit'])){
 	<link rel="stylesheet" href="css/base.css" />
 	<link rel="stylesheet" href="css/login.css" />
 	<link rel="stylesheet" href="css/ev01.css" />
-	<title>您好，欢迎登陆clms后台管理系统！</title>
+	<title>您好，欢迎登陆clms内容管理系统！</title>
 </head>
 <body>
 	<div id="bg">
@@ -71,8 +71,9 @@ if (isset($_SESSION['limit'])){
 			return;
 		}
 		loading.removeClass('hide');
+		o_msg.html('');
 		$.ajax({
-			url:'ajax.php?act=login',
+			url:'deal.php?act=login',
 			timeout:5000,
 			type:'post',
 			data:{uname:uname,pwd:pwd,rem:$("#rem")[0].checked},

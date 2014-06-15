@@ -11,7 +11,7 @@ include "{$root}/inc/func/common.func.php";
 include "{$root}/config/conn.php";
 
 $act = isset($_GET['act']) ? $_GET['act'] : '';
-if (empty($act) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') exit();
+empty($act) && exit();
 
 switch ($act) {
 	case 'login' :
@@ -26,9 +26,17 @@ switch ($act) {
 			'logintime' => time()), "uname='{$uname}'") or exit('-2');
 		if ($rem == 'true') {
 			setcookie(session_name(), session_id(), time() + 180 * 86400, '/');
+			$_SESSION['rem'] = 1;
 		}
 		$_SESSION['uname'] = $uname;
 		$_SESSION['limit'] = $ret;
 		exit('1');
+	break;
+	case 'logout' :
+		if(isset($_SESSION['rem'])) setcookie(session_name(), session_id(), time() - 3600, '/');
+		session_unset();
+		session_destroy();
+		header('location:login.php');
+		exit();
 	break;
 }

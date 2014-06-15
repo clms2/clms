@@ -1,9 +1,3 @@
-/*
-SQLyog 企业版 - MySQL GUI v8.14 
-MySQL - 5.6.12 : Database - clms
-*********************************************************************
-*/
-
 /*Table structure for table `cl_admin` */
 
 DROP TABLE IF EXISTS `cl_admin`;
@@ -118,4 +112,3 @@ CREATE TABLE `cl_message` (
   `addtime` int(10) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
-\

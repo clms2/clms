@@ -1,20 +1,31 @@
 div,body,h1,h2,h3,h4,h5,img,p,ul{margin: 0;padding:0}
 img{display: inline-block;}
 a{text-decoration: none;}
+a:hover{border-bottom: 1px solid #fff;}
 li{list-style: none;}
+
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.clearfix{display:inline-table;}/* Hides from IE-mac \*/
+*html .clearfix{height:1%;}
+.clearfix{display:block;}/* End hide from IE-mac */
+*+html .clearfix{min-height:1%;}
+.clear{clear:both;}
 
 .in{display: block;}
 .hide{display: none;}
 .op7{filter:alpha(opacity=70);-moz-opacity: 0.7;opacity: 0.7;}
 .op6{filter:alpha(opacity=60);-moz-opacity: 0.6;opacity: 0.6;}
 .op5{filter:alpha(opacity=50);-moz-opacity: 0.5;opacity: 0.5;}
+.lifl li,.left{float: left;}
 label{cursor: pointer;}
 body{background: #91d726;}
 
+/*头部*/
 .header{height: 114px;width: 1280px;background: url(../images/headerbg.jpg) no-repeat;margin: 0 auto;border-bottom: 4px solid #4f6f0c;}
 .toolbar{float: right;height: 24px;border-bottom: 1px solid #325103;background: #5a9004;}
-.toolbar li{float: left;padding: 0 12px;background: url(../images/tb_li_bg.gif) no-repeat right top;}
+.toolbar li{padding: 0 12px;background: url(../images/tb_li_bg.gif) no-repeat right top;}
 .header i{background: url(../images/toolbar_bg.png) no-repeat;width: 24px;height: 24px;display: block;float: right;}
 .toolbar li.nobg{background: none;}
 .toolbar li img{vertical-align: middle;padding-right: 5px;}
 .toolbar li a{font:12px/24px '宋体';color: #fff;}
+/*.toolbar li a:hover{border-bottom-color: #fff;}*/
