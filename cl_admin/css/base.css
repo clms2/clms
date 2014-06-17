@@ -21,11 +21,17 @@ label{cursor: pointer;}
 body{background: #91d726;}
 
 /*头部*/
-.header{height: 114px;width: 1280px;background: url(../images/headerbg.jpg) no-repeat;margin: 0 auto;border-bottom: 4px solid #4f6f0c;}
+.header{height: 114px;width: 1280px;background: url(../images/headerbg.jpg) no-repeat;margin: 0 auto;border-bottom: 4px solid #5c7c0f;}
 .toolbar{float: right;height: 24px;border-bottom: 1px solid #325103;background: #5a9004;}
 .toolbar li{padding: 0 12px;background: url(../images/tb_li_bg.gif) no-repeat right top;}
 .header i{background: url(../images/toolbar_bg.png) no-repeat;width: 24px;height: 24px;display: block;float: right;}
 .toolbar li.nobg{background: none;}
 .toolbar li img{vertical-align: middle;padding-right: 5px;}
 .toolbar li a{font:12px/24px '宋体';color: #fff;}
-/*.toolbar li a:hover{border-bottom-color: #fff;}*/
+.nav_top{margin-left: 200px;margin-top: 57px;height: 32px;background: url(../images/nt_li_bg.gif) repeat-x;border-radius: 5px;}
+.nav_top li{padding:0 25px;font:bold 15px/32px 'Arial'}
+.nav_top li a{;color: #fff;}
+
+.main{height: 650px;}
+/*左侧*/
+.nav_left{width: 200px;border-right:1px solid #506e0c;}
