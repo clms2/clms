@@ -28,9 +28,18 @@ body{background: #91d726;}
 .toolbar li.nobg{background: none;}
 .toolbar li img{vertical-align: middle;padding-right: 5px;}
 .toolbar li a{font:12px/24px '宋体';color: #fff;}
-.nav_top{margin-left: 200px;margin-top: 57px;height: 32px;background: url(../images/nt_li_bg.gif) repeat-x;border-radius: 5px;}
-.nav_top li{padding:0 25px;font:bold 15px/32px 'Arial'}
+.yj_left,.yj_right{width: 2px;height: 32px;background-repeat: no-repeat;margin-top: 10px;}
+.yj_left{background-image: url(../images/yj_left.gif);}
+.yj_right{background-image: url(../images/yj_right.gif);}
+.nav{margin-top: 47px;margin-bottom: -4px;}
+.nav_top{height: 42px;background: url(../images/nt_li_bg.gif) repeat-x left bottom;}
+.nav_top li{padding:0px 25px;font:bold 15px/32px 'Arial';margin-top: 10px;border-top: 1px solid #1b3601;}
+.nav_top li.in{background-image: url(../images/nav_in_libg.gif);line-height: 41px;height:36px;margin-top: 5px;padding-bottom: 4px;padding-top: 0;border: 1px solid #1b3601;border-bottom: 0;border-radius:5px 5px 0 0;}
+.nav_top li.in a{color: #182b00}
+.nav_top li.in a:hover{border-bottom-color: #182b00}
+.nav_top li.first.in{margin-left: -2px;padding-right: 27px;}
 .nav_top li a{;color: #fff;}
+.nav p{width:170px;padding-left: 30px;font:12px/12px 'Arial';padding-top: 21px;}
 
 .main{height: 650px;}
 /*左侧*/

@@ -14,9 +14,9 @@ class User {
 	 */
 	function checklogin() {
 		global $db,$pre;
-		$row = $db->getOneAssoc("{$pre}admin a join `{$pre}group` b on a.gid = b.id", "uname = '{$this->uname}'", 'pwd,limit');
+		$row = $db->getOneAssoc("{$pre}admin a join `{$pre}group` b on a.gid = b.id", "uname = '{$this->uname}'", 'pwd,limit,logintime');
 		if (empty($row) || $this->getpwd($this->pwd) !== $row['pwd']) return 0;
-		return $row['limit'];
+		return array('limit' => $row['limit'], 'logintime' => $row['logintime']);
 	}
 	
 	/**

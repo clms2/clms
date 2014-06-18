@@ -15,3 +15,4 @@ session_start();
 function __autoload($class) {
 	include_once ROOT . "/inc/class/{$class}.class.php";
 }
+date_default_timezone_set('PRC');

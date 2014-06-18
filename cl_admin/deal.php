@@ -29,7 +29,8 @@ switch ($act) {
 			$_SESSION['rem'] = 1;
 		}
 		$_SESSION['uname'] = $uname;
-		$_SESSION['limit'] = $ret;
+		$_SESSION['limit'] = $ret['limit'];
+		$_SESSION['logintime'] = $ret['logintime'];
 		exit('1');
 	break;
 	case 'logout' :

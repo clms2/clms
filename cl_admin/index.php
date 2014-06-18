@@ -6,7 +6,7 @@ include_once 'check.php';
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<title>您好，欢迎登陆</title>
+	<title>您好，<?=$_SESSION['uname']?>，欢迎登陆</title>
 	<link rel="stylesheet" href="css/base.css" />
 	<script src="js/jq.js"></script>
 </head>
@@ -19,27 +19,33 @@ include_once 'check.php';
 		</ul>
 		<i></i>
 		<div class="clear"></div>
-		<ul class="nav_top clear lifl left" id="nav_top">
-			<li class="in"><a href="main_index.php" target="main_index">首页</a></li>
-			<li><a href="main_column.php" target="main_column">栏目管理</a></li>
-			<li><a href="" target="main">文章管理</a></li>
-		</ul>
+		<div class="nav clearfix left">
+			<p class="left">上次登录：<?=date('Y-m-d H:i', $_SESSION['logintime']) ?></p>
+			<div class="yj_left left"></div>
+			<ul class="nav_top lifl left" id="nav_top">
+				<li class="in first"><a href="main_index.php" target="main_index">首页</a></li>
+				<li><a href="main_column.php" target="main_column">栏目管理</a></li>
+				<li><a href="" target="main">文章管理</a></li>
+			</ul>
+			<div class="yj_right left"></div>
+		</div>
 	</div>
 
 	<div class="main clearfix">
 		<div class="nav_left left">
 			
 		</div>
-		<div class="main_con left" id="main_con">
-		</div>
+		<div class="main_con left" id="main_con"></div>
 		<script>
+		//动态创建iframe，已存在则显示
 		$("#nav_top a").click(function() {
+			$(this).parent().addClass('in').siblings().removeClass('in');
 			var ifname = $(this).attr('target');
-			var container = $("#main_con iframe[name="+ifname+"]");
-			if(container.length == 0){
+			var iframe = $("#main_con iframe[name="+ifname+"]");
+			if(iframe.length == 0){
 				$('<iframe src="" frameborder="0" name="'+ifname+'"></iframe>').appendTo("#main_con").siblings().hide();
 			}else{
-				container.show().siblings().hide();
+				iframe.show().siblings().hide();
 				return false;
 			}
 		});
