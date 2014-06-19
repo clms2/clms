@@ -1,6 +1,6 @@
 <?php
 /**
- * 在需过滤的文件中引入即可，防止sql注入、xss
+ * 鍦ㄩ渶杩囨护鐨勬枃浠朵腑寮曞叆鍗冲彲锛岄槻姝ql娉ㄥ叆銆亁ss
  */
 function filter(&$arr) {
 	array_walk_recursive($arr, 'walk', get_magic_quotes_gpc());
