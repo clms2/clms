@@ -24,8 +24,8 @@ include_once 'check.php';
 			<div class="yj_left left"></div>
 			<ul class="nav_top lifl left openframe">
 				<li class="in first"><a href="main_index.php" target="main_index">首页</a></li>
-				<li><a href="main_column.php" target="main_column">栏目管理</a></li>
-				<li><a href="" target="main">文章管理</a></li>
+				<li><a href="column.php" target="main_column">栏目管理</a></li>
+				<li class="last"><a href="" target="main">文章管理</a></li>
 			</ul>
 			<div class="yj_right left"></div>
 		</div>
@@ -35,8 +35,19 @@ include_once 'check.php';
 		<div class="nav_left left">
 			<div class="op"><p>操作菜单</p></div>
 			<div class="nav_con">
-				<ul class="parent">
+				<ul class="parent" id="nav_left">
 					<li class="in">
+						<div class="big_tit">
+							<span><img src="images/icon01.png" /></span>
+							<em>栏目管理</em>
+							<i></i>
+						</div>
+						<ul class="son clear openframe">
+							<li><img src="images/icon_arcadd.png" /><a href="arc_add.php" target="arc_add">栏目列表</a></li>
+							<li><img src="images/icon_arcadd.png" /><a href="arc_add.php" target="arc_add">添加栏目</a></li>
+						</ul>
+					</li>
+					<li>
 						<div class="big_tit">
 							<span><img src="images/icon01.png" /></span>
 							<em>文章管理</em>
@@ -57,14 +68,22 @@ include_once 'check.php';
 							<li><img src="images/icon_arcadd.png" /><a href="arc_add.php" target="arc_add">生成静态</a></li>
 						</ul>
 					</li>
-					<!-- <li><div>文章管理</div></li>
-					<li><div>生成静态</div></li>
-					<li><div>系统设置</div></li> -->
+					<li>
+						<div class="big_tit">
+							<span><img src="images/icon02.png" /></span>
+							<em>系统设置</em>
+							<i></i>
+						</div>
+						<ul class="son clear openframe">
+							<li><img src="images/icon_arcadd.png" /><a href="arc_add.php" target="arc_add">系统设置</a></li>
+						</ul>
+					</li>
 				</ul>
 			</div>
 			<!-- nav_con end -->
 		</div>
 		<!-- nav_left end -->
+
 		<div class="main_con left" id="main_con"></div>
 
 		<script>
@@ -75,10 +94,27 @@ include_once 'check.php';
 			var ifname = $(this).attr('target');
 			var iframe = $("#main_con iframe[name="+ifname+"]");
 			if(iframe.length == 0){
-				$('<iframe src="" width="100%" height="100%" frameborder="0" name="'+ifname+'"></iframe>').appendTo("#main_con").siblings().hide();
+				$('<iframe src="" frameborder="0" name="'+ifname+'"></iframe>').appendTo("#main_con").siblings().hide();
 			}else{
 				iframe.show().siblings().hide();
 				return false;
+			}
+		});
+
+		// 左侧导航下啦效果
+		$("#nav_left>li").click(function() {
+			var _this = $(this), ul = _this.children('ul'), visible = ul.is(':visible');
+			ul.stop(true,true);
+			if(visible) ul.animate({height:0},function(){
+				$(this).hide();
+				_this.removeClass('in');
+			});
+			else{
+				var li = ul.children('li'), h = (li.height()+1)*li.length;
+				ul.show().animate({height:h}, 350, function(){
+					$(this).addClass('in');
+					_this.addClass('in');
+				});
 			}
 		});
 		</script>
