@@ -23,7 +23,7 @@ include_once 'check.php';
 			<p class="left">上次登录：<?=date('Y-m-d H:i', $_SESSION['logintime']) ?></p>
 			<div class="yj_left left"></div>
 			<ul class="nav_top lifl left openframe">
-				<li class="in first"><a href="main_index.php" target="main_index">首页</a></li>
+				<li class="in first"><a href="webset.php" target="main_index">首页</a></li>
 				<li><a href="column.php" target="main_column">栏目管理</a></li>
 				<li class="last"><a href="" target="main">文章管理</a></li>
 			</ul>
@@ -84,7 +84,7 @@ include_once 'check.php';
 		</div>
 		<!-- nav_left end -->
 
-		<div class="main_con left" id="main_con"></div>
+		<div class="main_con left" id="main_con"><iframe src="webset.php" frameborder="0" name="main_index"></iframe></div>
 
 		<script>
 		//动态创建iframe，已存在则显示
