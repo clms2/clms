@@ -1,19 +1,27 @@
 <?php
-class Mysql {
+class Mysql implements IMysql {
 	public $link_id;
 	public $debug = 0;
 	public $lastsql; //最后次查询的sql语句
 	protected $dbname;
 	protected $pre;
+	// static $instance;
 	
-	function __construct($dbhost, $dbuser, $dbpwd, $dbname, $pre = '', $charset = 'utf8') {
-		$this->link_id = mysqli_connect($dbhost, $dbuser, $dbpwd) or die(mysqli_error());
-		mysqli_select_db($this->link_id, $dbname);
-		mysqli_query($this->link_id, "set names '{$charset}'");
-		$this->dbname = $dbname;
-		$this->pre = $pre;
+	function __construct($cfg) {
+		$this->link_id = mysqli_connect($cfg['dbhost'], $cfg['dbuser'], $cfg['dbpwd']) or die('connect to database failed.');
+		mysqli_select_db($this->link_id, $cfg['dbname']);
+		mysqli_query($this->link_id, "set names '{$cfg['charset']}'");
+		$this->dbname  = $cfg['dbname'];
+		$this->pre     = $cfg['pre'];
 	}
-	
+
+	/*function getInstance($cfg = array()){
+		if(!self::$instance instanceof self){
+			self::$instance = new self($cfg['dbhost'], $cfg['dbuser'], $cfg['dbpwd'], $cfg['pre'], $cfg['charset']);
+		}
+		return self::$instance;
+	}*/
+
 	/**
 	 * 执行一条sql语句
 	 *
@@ -27,8 +35,14 @@ class Mysql {
 		return $res;
 	}
 	
+	/**
+	 * 返回数组
+	 * @param  string  $sql      
+	 * @param  boolean $onefield 是否返回第一个字段
+	 * @return array            结果数组
+	 */
 	function getArr($sql, $onefield = false) {
-		$ret = array ();
+		$ret  = array ();
 		$func = $onefield ? 'mysqli_fetch_row' : 'mysqli_fetch_assoc';
 		if ($res = mysqli_query($this->link_id, $sql)) {
 			while ( ($row = $func($res)) !== false ) {
@@ -52,13 +66,13 @@ class Mysql {
 	/**
      * 获取一个字段值
      * @param string $table 表名
-     * @param string $where
      * @param string $field 字段名
+     * @param string $where
      * @return string
      */
-	function getOneField($table,$field, $where = '') {
+	function getOneField($table, $field, $where = '') {
 		$where = $where ? "where {$where}" : '';
-		$sql = "select `{$field}` from `{$this->pre}{$table}` {$where}";
+		$sql   = "select `{$field}` from `{$this->pre}{$table}` {$where}";
 		if (!($res = $this->query($sql))) return '';
 		$row = mysqli_fetch_row($res);
 		return $row[0];
@@ -67,11 +81,12 @@ class Mysql {
 	/**
      * 获取表的记录总数
      * @param string $table
-     * @param string $condition
+     * @param string $where
      * @return int
      */
-	function getRowNum($table, $condition = '') {
-		$sql = "select count(*) from {$table} {$condition}";
+	function getRowNum($table, $where = '') {
+		empty($where) or $where = "where {$where}";
+		$sql = "select count(*) from {$table} {$where}";
 		if (!($res = $this->query($sql))) return 0;
 		$row = mysqli_fetch_row($res);
 		return isset($row[0]) ? $row[0] : 0;
@@ -81,14 +96,16 @@ class Mysql {
 	 * 获取关联数组形式的结果集,
 	 *
 	 * @param string $table
-	 * @param string $condition 条件,需带完整陈述，如where id=1
+	 * @param string $where 
 	 * @param string $field 需要的字段，默认全部
 	 * @param string $limit 默认返回:array(0=>array([$k]=>[$v])),如果为true返回:array([$k]=>[$v])
 	 * @return array
 	 */
-	function getAssoc($table, $condition = '', $field = '', $limit = '') {
-		$field = !$field ? '*' : $this->safe_field($field);
-		$sql = "select {$field} from {$table} {$condition}";
+	function getAssoc($table, $where = '', $field = '', $limit = '') {
+		$field = !empty($field) ? '*' : $this->safe_field($field);
+		$where = !empty($where) ? "where {$where}" : $where;
+		
+		$sql = "select {$field} from {$table} {$where}";
 		$arr = array ();
 		if (!($res = $this->query($sql))) return false;
 		while ( ($rs = mysqli_fetch_assoc($res)) !== null ) {
@@ -100,12 +117,13 @@ class Mysql {
 	/**
      * 获取一列组成1维数组
      * @param string $table
-     * @param string $condition
      * @param string $colName
-     * @return string|Ambigous <string, unknown>
+     * @param string $where
+     * @return array/'' 
      */
-	function getCols($table, $colName, $condition = '') {
-		$sql = "select {$colName} from {$table} {$condition}";
+	function getCols($table, $colName, $where = '') {
+		empty($where) or $where = "where {$where}";
+		$sql = "select {$colName} from {$table} {$where}";
 		if (!($res = $this->query($sql))) return '';
 		while ( ($row = mysqli_fetch_row($res)) !== null ) {
 			$arr[] = $row[0];
@@ -116,21 +134,20 @@ class Mysql {
 	/**
      * 获取1条关联数组
      * @param string $table
-     * @param string $where 条件,如id=1
+     * @param string $where
      * @param string $field 需要的字段，默认全部
      * @return array/false
      */
 	function getOneAssoc($table, $where, $field = '') {
-		return $this->getAssoc($table, "where {$where} limit 1", $field, 1);
+		return $this->getAssoc($table, "{$where} limit 1", $field, 1);
 	}
 	
 	/**
 	 * 更新数据
-	 *
-	 * @param 表名 $table        	
-	 * @param 键值关联数组 $assoc        	
-	 * @param string $where        	
-	 * @return int
+	 * @param  stirng $table 
+	 * @param  array $assoc 键值关联数组(字段=>值), 值可传++/--，如'1++',实现字段加1
+	 * @param  string $where 
+	 * @return int        受影响记录数
 	 */
 	function update($table, $assoc, $where = '') {
 		$set = array ();
@@ -147,18 +164,17 @@ class Mysql {
 			}
 			$set[] = "`{$k}`=" . $v;
 		}
-		$set = implode(',', $set);
-		$where = $where ? "where {$where}" : '';
-		$sql = "update `{$table}` set {$set} {$where}";
+		$set   = implode(',', $set);
+		$where = !empty($where) ? "where {$where}" : '';
+		$sql   = "update `{$table}` set {$set} {$where}";
 		return $this->affectedRow($sql);
 	}
 	
 	/**
 	 * 插入一条数据
-	 *
-	 * @param 表 $table        	
-	 * @param 键值数组 $assoc        	
-	 * @return int
+	 * @param  string $table
+	 * @param  array $assoc 键值数组(字段=>值)
+	 * @return int        受影响记录数
 	 */
 	function insert($table, $assoc) {
 		$keys = array_keys($assoc);
@@ -178,9 +194,8 @@ class Mysql {
 	
 	/**
 	 * 删除记录
-	 *
-	 * @param 表 $table        	
-	 * @param 条件 $where        	
+	 * @param  string $table 
+	 * @param  string $where 
 	 * @return int
 	 */
 	function delete($table, $where) {
@@ -193,7 +208,7 @@ class Mysql {
      * @param string $field
      * @return string
      */
-	protected function safe_field($field) {
+	function safe_field($field) {
 		if (!strpos($field, ',')) return "`{$field}`";
 		$temp_arr = explode(',', $field);
 		foreach ( $temp_arr as $k => $v ) {

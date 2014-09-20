@@ -1,8 +1,26 @@
 <?php
-$dbhost = 'localhost';
-$dbuser = 'root';
-$dbpwd = '123456';
-$dbname = 'clms';
-$pre = 'cl_';
+$config['dbhost']  = 'localhost';
+$config['dbuser']  = 'root';
+$config['dbpwd']   = '123456';
+$config['dbname']  = 'clms';
+$config['pre']     = 'cl_';
+$config['charset'] = 'utf8';
 
-$db = new Mysql($dbhost, $dbuser, $dbpwd, $dbname, $pre);
+class DBFactory{
+	static $instance;
+
+	static function getInstance($type, $cfg = array()){
+		if(!isset($instance)){
+			switch ($type) {
+				case 'mysql':
+					self::$instance = new Mysql($cfg);
+					break;
+				default:
+					die('unsupport type');
+			}
+		}
+		return self::$instance;
+	}
+}
+
+$db = DBFactory::getInstance('mysql', $config);

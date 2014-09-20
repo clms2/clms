@@ -1,8 +1,11 @@
 <?php
-include dirname(__DIR__).'/config/sys.config.php';
-if (isset($_SESSION['limit'])){
-	header('location:index.php');
-	exit();
+//nos用于标记退出,防止再次生成session文件
+if(!isset($_GET['nos'])){
+	include dirname(__DIR__).'/config/sys.config.php';
+	if (isset($_SESSION['limit'])){
+		header('location:index.php');
+		exit();
+	}
 }
 ?>
 <!DOCTYPE HTML>
@@ -10,6 +13,8 @@ if (isset($_SESSION['limit'])){
 <head>
 	<meta charset="UTF-8">
 	<script type="text/javascript" src="js/jq.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
+	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="css/base.css" />
 	<link rel="stylesheet" href="css/login.css" />
 	<link rel="stylesheet" href="css/ev01.css" />
@@ -33,14 +38,16 @@ if (isset($_SESSION['limit'])){
 			</div>
 			<div>
 				<label for="rem">
-					<input type="checkbox" name="remember" value="1" id="rem"> 记住我
+					<input type="checkbox" name="remember" value="1" id="rem" />
+					记住我
 				</label>
 			</div>
 			<div class="submit">
 				<a href="javascript:void(0)" id="submit">登陆</a>
 				<label id="msg" class="in">
 					<span></span>
-					<img class="hide" src="images/loading.gif" height="30"></label>
+					<img class="hide" src="images/loading.gif" height="30" />
+				</label>
 			</div>
 		</div>
 
@@ -55,6 +62,9 @@ if (isset($_SESSION['limit'])){
 	var o_msg = $("#msg").children('span');
 	var msg = function(s){
 		o_msg.html(s);
+		setTimeout(function(){
+			o_msg.stop().animate({opacity:0}, 1000, function(){$(this).html('').css('opacity', 1)});
+		}, 2000);
 	}
 
 	$("#uname,#pwd").keyup(function(event){
@@ -65,9 +75,16 @@ if (isset($_SESSION['limit'])){
 	});
 
 	$("#submit").click(function(){
-		var loading = $(this).next().children('img'), uname = $("#uname").val(), pwd = $("#pwd").val();
+		var loading = $(this).next().children('img'), 
+			ouname  = $("#uname"), 
+			uname   = ouname.val(), 
+			opwd    = $("#pwd"), 
+			pwd     = opwd.val();
+
 		if(uname == '' || pwd == '') {
 			msg('请输入用户名/密码');
+			if(uname == '') ouname.focus();
+			else opwd.focus();
 			return;
 		}
 		loading.removeClass('hide');
@@ -93,10 +110,12 @@ if (isset($_SESSION['limit'])){
 						msg('用户名/密码不能为空')
 					break;
 					case 1:
+						window.onbeforeunload = null;
 						location.href = 'index.php';
 					break;
 					case 0:
 						msg('用户名/密码错误');
+						opwd.focus();
 					break;
 					default:
 						msg('未知错误');

@@ -7,8 +7,10 @@ include_once 'check.php';
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>您好，<?=$_SESSION['uname']?>，欢迎登陆</title>
+	<link rel="stylesheet" href="css/reset.css" />
 	<link rel="stylesheet" href="css/base.css" />
 	<script src="js/jq.js"></script>
+	<script src="js/common.js"></script>
 </head>
 <body>
 	<div class="header">
@@ -36,15 +38,15 @@ include_once 'check.php';
 			<div class="op"><p>操作菜单</p></div>
 			<div class="nav_con">
 				<ul class="parent" id="nav_left">
-					<li class="in">
+					<li>
 						<div class="big_tit">
 							<span><img src="images/icon01.png" /></span>
 							<em>栏目管理</em>
 							<i></i>
 						</div>
 						<ul class="son clear openframe">
-							<li><img src="images/icon_arcadd.png" /><a href="arc_add.php" target="arc_add">栏目列表</a></li>
-							<li><img src="images/icon_arcadd.png" /><a href="arc_add.php" target="arc_add">添加栏目</a></li>
+							<a href="arc_add.php" target="arc_add"><li><img src="images/icon_arcadd.png" />栏目列表</li></a>
+							<a href="arc_add.php" target="arc_add"><li class="last"><img src="images/icon_arcadd.png" />添加栏目</li></a>
 						</ul>
 					</li>
 					<li>
@@ -54,8 +56,8 @@ include_once 'check.php';
 							<i></i>
 						</div>
 						<ul class="son clear openframe">
-							<li><img src="images/icon_arcadd.png" /><a href="arc_add.php" target="arc_add">添加文章</a></li>
-							<li><img src="images/icon_arcadd.png" /><a href="arc_add.php" target="arc_add">添加文章</a></li>
+							<a href="arc_add.php" target="arc_add"><li><img src="images/icon_arcadd.png" />添加文章</li></a>
+							<a href="arc_add.php" target="arc_add"><li class="last"><img src="images/icon_arcadd.png" />添加文章</li></a>
 						</ul>
 					</li>
 					<li>
@@ -65,17 +67,17 @@ include_once 'check.php';
 							<i></i>
 						</div>
 						<ul class="son clear openframe">
-							<li><img src="images/icon_arcadd.png" /><a href="arc_add.php" target="arc_add">生成静态</a></li>
+							<a href="arc_add.php" target="arc_add"><li class="last"><img src="images/icon_arcadd.png" />生成静态</li></a>
 						</ul>
 					</li>
-					<li>
+					<li class="in">
 						<div class="big_tit">
 							<span><img src="images/icon02.png" /></span>
-							<em>系统设置</em>
+							<em>网站设置</em>
 							<i></i>
 						</div>
 						<ul class="son clear openframe">
-							<li><img src="images/icon_arcadd.png" /><a href="arc_add.php" target="arc_add">系统设置</a></li>
+							<a href="webset.php" target="arc_add"><li class="last"><img src="images/icon_arcadd.png" />网站设置</li></a>
 						</ul>
 					</li>
 				</ul>
@@ -91,10 +93,10 @@ include_once 'check.php';
 		$(".openframe a").click(function() {
 			$(this).parent('li').addClass('in').siblings().removeClass('in');
 
-			var ifname = $(this).attr('target');
-			var iframe = $("#main_con iframe[name="+ifname+"]");
+			var name = $(this).attr('target');
+			var iframe = $("#main_con iframe[name="+name+"]");
 			if(iframe.length == 0){
-				$('<iframe src="" frameborder="0" name="'+ifname+'"></iframe>').appendTo("#main_con").siblings().hide();
+				$('<iframe src="" frameborder="0" name="'+name+'"></iframe>').appendTo("#main_con").siblings().hide();
 			}else{
 				iframe.show().siblings().hide();
 				return false;
@@ -110,7 +112,7 @@ include_once 'check.php';
 				_this.removeClass('in');
 			});
 			else{
-				var li = ul.children('li'), h = (li.height()+1)*li.length;
+				var li = ul.find('li'), h = (li.height()+1)*li.length;
 				ul.show().animate({height:h}, 350, function(){
 					$(this).addClass('in');
 					_this.addClass('in');
