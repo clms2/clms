@@ -1,5 +1,8 @@
 <?php
-class Mysql implements IMysql {
+/**
+ * mysqli class
+ */
+class Mysql {
 	public $link_id;
 	public $debug = 0;
 	public $lastsql; //最后次查询的sql语句
@@ -8,8 +11,11 @@ class Mysql implements IMysql {
 	// static $instance;
 	
 	function __construct($cfg) {
-		$this->link_id = mysqli_connect($cfg['dbhost'], $cfg['dbuser'], $cfg['dbpwd']) or die('connect to database failed.');
-		mysqli_select_db($this->link_id, $cfg['dbname']);
+		if(empty($cfg['charset'])) $cfg['charset'] = 'utf8';
+		if(empty($cfg['pre'])) $cfg['pre'] = '';
+		if(empty($cfg['dbport'])) $cfg['dbport'] = '3306';
+
+		$this->link_id = mysqli_connect($cfg['dbhost'], $cfg['dbuser'], $cfg['dbpwd'], $cfg['dbname'], $cfg['dbport']) or die('connect to database failed.');
 		mysqli_query($this->link_id, "set names '{$cfg['charset']}'");
 		$this->dbname  = $cfg['dbname'];
 		$this->pre     = $cfg['pre'];
@@ -44,8 +50,8 @@ class Mysql implements IMysql {
 	function getArr($sql, $onefield = false) {
 		$ret  = array ();
 		$func = $onefield ? 'mysqli_fetch_row' : 'mysqli_fetch_assoc';
-		if ($res = mysqli_query($this->link_id, $sql)) {
-			while ( ($row = $func($res)) !== false ) {
+		if ($res = $this->query($sql)) {
+			while ( ($row = $func($res)) !== null ) {
 				$ret[] = $onefield ? $row[0] : $row;
 			}
 		}
@@ -84,9 +90,8 @@ class Mysql implements IMysql {
      * @param string $where
      * @return int
      */
-	function getRowNum($table, $where = '') {
-		empty($where) or $where = "where {$where}";
-		$sql = "select count(*) from {$table} {$where}";
+	function getRowNum($table, $condition = '') {
+		$sql = "select count(*) from {$table} {$condition}";
 		if (!($res = $this->query($sql))) return 0;
 		$row = mysqli_fetch_row($res);
 		return isset($row[0]) ? $row[0] : 0;
@@ -102,10 +107,10 @@ class Mysql implements IMysql {
 	 * @return array
 	 */
 	function getAssoc($table, $where = '', $field = '', $limit = '') {
-		$field = !empty($field) ? '*' : $this->safe_field($field);
+		$field = !empty($field) ? $this->safe_field($field) : '*';
 		$where = !empty($where) ? "where {$where}" : $where;
 		
-		$sql = "select {$field} from {$table} {$where}";
+		$sql = "select {$field} from {$this->pre}{$table} {$where}";
 		$arr = array ();
 		if (!($res = $this->query($sql))) return false;
 		while ( ($rs = mysqli_fetch_assoc($res)) !== null ) {
@@ -123,7 +128,7 @@ class Mysql implements IMysql {
      */
 	function getCols($table, $colName, $where = '') {
 		empty($where) or $where = "where {$where}";
-		$sql = "select {$colName} from {$table} {$where}";
+		$sql = "select {$colName} from {$this->pre}{$table} {$where}";
 		if (!($res = $this->query($sql))) return '';
 		while ( ($row = mysqli_fetch_row($res)) !== null ) {
 			$arr[] = $row[0];
@@ -166,7 +171,7 @@ class Mysql implements IMysql {
 		}
 		$set   = implode(',', $set);
 		$where = !empty($where) ? "where {$where}" : '';
-		$sql   = "update `{$table}` set {$set} {$where}";
+		$sql   = "update `{$this->pre}{$table}` set {$set} {$where}";
 		return $this->affectedRow($sql);
 	}
 	
@@ -183,12 +188,12 @@ class Mysql implements IMysql {
 			$keys[$k] = "`{$v}`";
 		}
 		foreach ( $values as $k => $v ) {
-			if (is_string($v)) $values[$k] = "'" . mysqli_real_escape_string($v, $this->link_id) . "'";
+			if (is_string($v)) $values[$k] = "'" . mysqli_real_escape_string($this->link_id, $v) . "'";
 			else $values[$k] = $v;
 		}
 		$keys = implode(',', $keys);
 		$values = implode(',', $values);
-		$sql = "insert into `{$table}`({$keys}) values({$values})";
+		$sql = "insert into `{$this->pre}{$table}`({$keys}) values({$values})";
 		return $this->affectedRow($sql);
 	}
 	
@@ -202,13 +207,24 @@ class Mysql implements IMysql {
 		$sql = "delete from `{$this->pre}{$table}` where {$where}";
 		return $this->affectedRow($sql);
 	}
+
+	/**
+	 * 是否存在
+	 * @param  string $table 
+	 * @param  string $where 
+	 * @return bool
+	 */
+	function exists($table, $where){
+		return $this->getRowNum($table, $where) > 0 ? true : false;
+	}
 	
 	/**
-     * 给字段加``
+     * 给字段加`` 带as就不处理
      * @param string $field
      * @return string
      */
 	function safe_field($field) {
+		if(stripos($field, 'as') !== false) return $field;
 		if (!strpos($field, ',')) return "`{$field}`";
 		$temp_arr = explode(',', $field);
 		foreach ( $temp_arr as $k => $v ) {
@@ -216,7 +232,7 @@ class Mysql implements IMysql {
 		}
 		return implode(',', $temp_arr);
 	}
-	
+
 	function error() {
 		return addslashes(mysqli_error($this->link_id));
 	}
