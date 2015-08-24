@@ -4,11 +4,12 @@
  * @author cw
  * @bug 648003174~.
  */
-class Pager {
+class Page {
 	public $url;
 	private $maxpageno;
 	private $pageno;
 	private $suffix = ''; //静态文件后缀
+	private $staticSuf = array('.html','.htm');
 
 	/**
 	 * 
@@ -24,7 +25,8 @@ class Pager {
 	}
 	
 	function pagelist($curpage = 1, $curclass = 'in') {
-		if ($pos = strrpos($this->url, '.')) {
+		// 如果是静态地址
+		if (in_array(strrchr($this->url, '.'), $this->staticSuf) && $pos = strrpos($this->url, '.')) {
 			$this->suffix = substr($this->url, $pos);
 			$this->url = substr($this->url, 0, $pos);
 		}
